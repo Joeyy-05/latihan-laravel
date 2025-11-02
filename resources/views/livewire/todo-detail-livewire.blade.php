@@ -30,7 +30,7 @@
             <p style="font-size: 18px;">{{ $todo->description }}</p>
         </div>
     </div>
-
+<!-- testing -->
     {{-- Modals --}}
     @include('components.modals.todos.edit-cover')
 </div>
