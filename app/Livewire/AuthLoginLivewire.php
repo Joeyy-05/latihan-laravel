@@ -1,35 +1,36 @@
-<?php
-
-namespace App\Livewire;
-
-use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Rule;
-use Livewire\Component;
-
-#[Layout('layouts.auth')]
-class AuthLoginLivewire extends Component
-{
-    #[Rule('required|email')]
-    public $email = '';
-
-    #[Rule('required')]
-    public $password = '';
-
-    public function save()
-    {
-        $this->validate();
-
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
-            request()->session()->regenerate();
-            return redirect()->route('app.catatan-keuangan.index');
-        }
-
-        $this->addError('email', 'Email atau password yang Anda masukkan salah.');
-    }
-
-    public function render()
-    {
-        return view('livewire.auth-login-livewire');
-    }
-}
+<form class="card card-md" wire:submit="save"> {{-- <-- PERBAIKAN 1: 'login' diubah menjadi 'save' --}}
+    <div class="card-body">
+        <h2 class="h2 text-center mb-4">Login</h2>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control @error('email') is-invalid @enderror"
+                placeholder="Masukkan email" wire:model="email">
+            @error('email')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-2">
+            <label class="form-label">
+                Password
+            </label>
+            <div class="input-group input-group-flat">
+                <input type="password" class="form-control @error('password') is-invalid @enderror"
+                    placeholder="Masukkan password" wire:model="password">
+            </div>
+            @error('password')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="form-footer">
+            <button type="submit" class="btn btn-primary w-100">
+                {{-- PERBAIKAN 2: 'login' diubah menjadi 'save' --}}
+                <span wire:loading.remove wire:target="save"> 
+                    Login
+                </span>
+                <span wire:loading wire:target="save">
+                    Loading...
+                </span>
+            </button>
+        </div>
+    </div>
+</form>
