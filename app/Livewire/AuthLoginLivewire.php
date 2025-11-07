@@ -3,31 +3,29 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 
+#[Layout('layouts.auth')]
 class AuthLoginLivewire extends Component
 {
-    public $email;
-    public $password;
+    #[Rule('required|email')]
+    public $email = '';
 
-    public function login()
+    #[Rule('required')]
+    public $password = '';
+
+    public function save()
     {
-        $this->validate([
-            'email' => 'required|string|email|max:255|exists:users,email',
-            'password' => 'required|string',
-        ]);
+        $this->validate();
 
-        // Periksa apakah pengguna berhasil login
-        if (!Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
-            // Jika login gagal
-            $this->addError('email', 'Email atau kata sandi salah.');
+        if (Auth::attempt(['email' => $this->email, 'password' => $this->password])) {
+            request()->session()->regenerate();
+            return redirect()->route('app.catatan-keuangan.index');
         }
 
-        // Reset data
-        $this->reset(['email', 'password']);
-
-        // Redirect ke halaman home
-        return redirect()->route('app.home');
+        $this->addError('email', 'Email atau password yang Anda masukkan salah.');
     }
 
     public function render()
