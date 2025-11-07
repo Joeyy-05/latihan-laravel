@@ -5,7 +5,7 @@ namespace App\Livewire;
 use App\Models\CatatanKeuangan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage; 
-use Illuminate\Support\Carbon; // <-- DITAMBAHKAN
+use Illuminate\Support\Carbon; 
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\On; 
@@ -30,8 +30,8 @@ class CatatanKeuanganLivewire extends Component
     // Properti untuk Filter
     public $search = '';
     public $filterTipe = '';
-    public $tanggalMulai; // <-- DITAMBAHKAN
-    public $tanggalSelesai; // <-- DITAMBAHKAN
+    public $tanggalMulai; 
+    public $tanggalSelesai; 
 
     protected $rules = [
         'judul'      => 'required|string|max:255',
@@ -100,14 +100,24 @@ class CatatanKeuanganLivewire extends Component
     {
         $this->validate();
         try {
+            // ==========================================================
+            // INI ADALAH PERBAIKANNYA:
+            // Logika upload gambar dikembalikan ke metode save()
+            // ==========================================================
+            $gambarPath = null;
+            if ($this->gambar) {
+                $gambarPath = $this->gambar->store('gambar-catatan', 'public');
+            }
+
             CatatanKeuangan::create([
                 'user_id'    => Auth::id(), 
                 'judul'      => $this->judul,
                 'tipe'       => $this->tipe,
                 'jumlah'     => $this->jumlah,
                 'tanggal'    => $this->tanggal,
-                'gambar'     => $gambarPath ?? null,
+                'gambar'     => $gambarPath, // <-- Sekarang $gambarPath sudah benar
             ]);
+            
             $this->resetForm();
             $this->dispatch('close-add-modal');
             $this->dispatch('refreshChartData')->to(CatatanKeuanganChart::class); 
@@ -159,15 +169,12 @@ class CatatanKeuanganLivewire extends Component
     public function render()
     {
         $catatans = CatatanKeuangan::where('user_id', Auth::id()) 
-            // Filter Tipe
             ->when($this->filterTipe !== '', function ($query) {
                 return $query->where('tipe', $this->filterTipe);
             })
-            // Filter Search Judul
             ->when($this->search !== '', function ($query) {
                 return $query->where('judul', 'like', '%' . $this->search . '%');
             })
-            // FILTER TANGGAL (BARU)
             ->when($this->tanggalMulai && $this->tanggalSelesai, function ($query) {
                 return $query->whereBetween('tanggal', [$this->tanggalMulai, $this->tanggalSelesai]);
             })
