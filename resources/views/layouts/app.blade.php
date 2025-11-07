@@ -12,20 +12,27 @@
     <link rel="icon" href="/logo.png" type="image/x-icon" />
 
     {{-- Judul --}}
-    <title>Laravel Todolist - @yield('title')</title>
+    <title>Catatan Keuangan - @yield('title')</title>
 
     {{-- Styles --}}
     @livewireStyles
     <link rel="stylesheet" href="/assets/vendor/bootstrap-5.3.8-dist/css/bootstrap.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    
 </head>
 
 <body class="bg-light">
+    
     <nav class="navbar navbar-expand-lg bg-white shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="{{ route('app.home') }}">
+            {{-- PERUBAHAN BRAND --}}
+            <a class="navbar-brand" href="{{ route('app.catatan-keuangan.index') }}">
                 <img src="/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
                 <span class="ms-2 fw-bold">
-                    TODOLIST
+                    CATATAN KEUANGAN
                 </span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -34,14 +41,17 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
+                    
+                    {{-- Tautan "Home" DIHAPUS --}}
+                    {{-- <li class="nav-item">
                         <a class="nav-link @if (request()->routeIs('app.home')) active @endif"
                             aria-current="page" href="{{ route('app.home') }}">Home</a>
-                    </li>
+                    </li> --}}
 
+                    {{-- Tautan "Catatan Keuangan" (Bisa dibiarkan atau dihapus jika hanya ada 1 menu) --}}
                     <li class="nav-item">
                         <a class="nav-link @if (request()->routeIs('app.catatan-keuangan.index')) active @endif"
-                            aria-current="page" href="{{ route('app.catatan-keuangan.index') }}">Catatan Keuangan</a>
+                            aria-current="page" href="{{ route('app.catatan-keuangan.index') }}">Dashboard</a>
                     </li>
 
                     <li class="nav-item dropdown">
@@ -86,8 +96,8 @@
         });
     </script>
     
-    {{-- PASTIKAN BARIS INI BENAR 'livewireScripts' --}}
     @livewireScripts
+    
 </body>
 
 </html>

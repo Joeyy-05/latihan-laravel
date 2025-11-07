@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CatatanKeuanganController; // <-- BARIS INI DITAMBAHKAN
+// use App\Http\Controllers\HomeController; // <-- Dihapus
+use App\Http\Controllers\CatatanKeuanganController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'auth'], function () {
@@ -12,14 +12,17 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::group(['prefix' => 'app', 'middleware' => 'check.auth'], function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('app.home');
-    Route::get('/todos/{todo_id}', [HomeController::class, 'todoDetail'])->name('app.todos.detail');
+    
+    // --- Rute Todo Dihapus ---
+    // Route::get('/home', [HomeController::class, 'index'])->name('app.home');
+    // Route::get('/todos/{todo_id}', [HomeController::class, 'todoDetail'])->name('app.todos.detail');
+    // --- Batas Rute Todo ---
 
-    // <-- BLOK INI DITAMBAHKAN
+    // Rute Catatan Keuangan (Sekarang menjadi rute utama aplikasi)
     Route::get('/catatan-keuangan', [CatatanKeuanganController::class, 'index'])->name('app.catatan-keuangan.index');
-    // <-- BATAS BLOK
 });
 
 Route::get('/', function () {
-    return redirect()->route('app.home');
-});
+    // Arahkan halaman utama ke Catatan Keuangan, bukan 'app.home'
+    return redirect()->route('app.catatan-keuangan.index');
+});     
